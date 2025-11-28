@@ -1,3 +1,4 @@
+import os
 import streamlit as st
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage, AIMessage
@@ -24,13 +25,15 @@ def main():
     
     #  get responses from the chat model
     def get_chat_response(user_input, chat_history):
-        template = """You are a helpful assistant. Provide concise and relevant answers to the user's questions based on the conversation history.
+        template = """
+        You are a helpful assistant. 
+        Provide concise and relevant answers to the user's questions based on the conversation history.
         Chat history:{chat_history}
         User input: {user_input}
         """
         
         prompt = ChatPromptTemplate.from_template(template)
-        llm = ChatOpenAI()
+        llm = ChatOpenAI(streaming=True, api_key=os.getenv("OPENAI_API_KEY"))
         
         chain = prompt | llm | StrOutputParser()
         
